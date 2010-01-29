@@ -1,0 +1,45 @@
+<html>
+<head>
+<title>Doctors</title>
+</head>
+
+<body>
+<h1>Your Doctor Guide!</h1>
+<h2>Doctors:</h2>
+<div id="listing">
+{% for doctor in doctors %}
+    <div id="item">
+      <ul>
+        <li><b>Name:</b> Dr. {{ doctor.name }}</li>
+        <li><b>Specialization:</b> {{ doctor.specialization }}</li>
+        <li><b>Sits from</b> {{ doctor.sits_from }} </b>up to</b> {{ doctor.sits_upto }}</li>
+        <li><b>Address:</b> {{ doctor.address }}</li>
+        <li><b>Rating:</b> {{ doctor.rating }}</li>
+      </ul>
+    </div>
+{% endfor %}
+</div>
+
+<h2>Add new doctor:</h2>
+<form action="/newdoctor", method="post">
+Name: <input type="text" name="name"><br>
+Specialization: <select name="specialization"><br>
+  {% for sp in specializations %}
+    <option>{{ sp }}</option>
+  {% endfor %}
+</select><br>
+Sits from <input type="text" name="sits_from"> up to <input type="text" name="sits_upto"><br>
+Address: <input type="text" name="address"><br>
+<input type="submit">
+</form>
+
+TODO
+<ul>
+<ul>Proper data types for doctors model</ul>
+<ul>Error handling in case of invalid data</ul>
+<ul>Search bar on the panel above</ul>
+<ul>Themeing</ul>
+<ul></ul>
+</ul>
+</body>
+</html>
