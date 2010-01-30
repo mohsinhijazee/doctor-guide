@@ -13,7 +13,10 @@
         <li><b>Name:</b> Dr. {{ doctor.name }}</li>
         <li><b>Specialization:</b> {{ doctor.specialization }}</li>
         <li><b>Sits from</b> {{ doctor.sits_from }} </b>up to</b> {{ doctor.sits_upto }}</li>
+        <li><b>Fee:</b> {{ doctor.fee }}</li>
         <li><b>Address:</b> {{ doctor.address }}</li>
+        <li><b>Phone:</b> {{ doctor.phone }}</li>
+        <li><b>Email:</b> {{ doctor.email }}</li>
         <li><b>Rating:</b> {{ doctor.rating }}</li>
       </ul>
     </div>
@@ -22,14 +25,7 @@
 
 <h2>Add new doctor:</h2>
 <form action="/newdoctor", method="post">
-Name: <input type="text" name="name"><br>
-Specialization: <select name="specialization"><br>
-  {% for sp in specializations %}
-    <option>{{ sp }}</option>
-  {% endfor %}
-</select><br>
-Sits from <input type="text" name="sits_from"> up to <input type="text" name="sits_upto"><br>
-Address: <input type="text" name="address"><br>
+{{ form.as_p }}
 <input type="submit">
 </form>
 

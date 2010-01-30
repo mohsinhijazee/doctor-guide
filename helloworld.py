@@ -1,62 +1,83 @@
 import cgi
+import logging
+import os
+
 from google.appengine.api import users
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.ext import db
 
-import logging
-import os
+
 from google.appengine.ext.webapp import template
+from google.appengine.ext.db import djangoforms
 
 
 specializations = set(['Neurology,', 'General', 'Psychology', 'Dental']);
 
+#FIXME: Timings must be datetime.datetime
 class Doctor(db.Model):
-    name              = db.StringProperty('Name' )
-    specialization    = db.StringProperty('Specialization', 
-        default='General', required=True, choices=specializations)
-    sits_from = db.StringProperty('From')
-    sits_upto = db.StringProperty('Up to')
-    address = db.StringProperty('Address')
-    rating = db.RatingProperty()
+    name              = db.StringProperty('Name', required=True)
+    specialization    = db.StringProperty('Specialization',
+                         default='General', required=True, 
+                         choices=specializations)
+    sits_from         = db.StringProperty('From')
+    sits_upto         = db.StringProperty('Up to')
+    address           = db.PostalAddressProperty('Address')
+    fee               = db.IntegerProperty('Fee')
+    phone             = db.PhoneNumberProperty('Phone')
+    email             = db.EmailProperty('Email')
+    rating            = db.RatingProperty('Rating')
     
 
+# This is just temporary as we will not be generating the form
+# own our own.
+class DoctorForm(djangoforms.ModelForm):
+    class Meta:
+        model   = Doctor
+        exclude = ['rating']
+    
+
+#TODO: The form should have a client side validation.
 class DoctorsListings(webapp.RequestHandler):
 
     def get(self):
         
         doctors = db.GqlQuery("SELECT * FROM Doctor ORDER BY rating DESC LIMIT 10");
         
-        template_values = {'doctors': doctors, 'specializations' : specializations}
+        template_values = {'doctors': doctors, 
+                           'specializations' : specializations,
+                           'form': DoctorForm()}
         
         path = os.path.join(os.path.dirname(__file__), 'index.html')
         
         self.response.out.write(template.render(path, template_values))
+        #self.response.out.write(DoctorForm())
 	
 		
+#TODO: This should do validation and should put all the errors in a dictionary
+# that would be forwarded to the main page where it would be visible on the 
+# form with relvant error messges.
 class RegisterDoctor(webapp.RequestHandler):
-	def post(self):
-	   
-		_name = self.request.get('name')
-		_spec = self.request.get('specialization')
-		_frm = self.request.get('sits_from')
-		_to = self.request.get('sits_upto')
-		_address = self.request.get('address')
-		
-		doctor = Doctor()
-		
-		doctor.name = _name
-		doctor.specialization = _spec
-		doctor.sits_from = _frm
-		doctor.sits_upto = _to
-		doctor.address = _address
-		 
-		doctor.put()
-		
-		self.redirect('/')
+    def post(self):
+        
+        doctor= Doctor(name=self.request.get('name'),  specialization=self.request.get('specialization'))
+        
+        doctor.sits_from = self.request.get('sits_from')
+        doctor.sits_upto = self.request.get('sits_upto')
+        doctor.address = db.PostalAddress(self.request.get('address'))
+        doctor.fee = int(self.request.get('fee'))
+        doctor.phone = db.PhoneNumber(self.request.get('phone'))
+        doctor.email = db.Email(self.request.get('email'))
+        
+        doctor.put()
+        
+        self.redirect('/')
+        
+        
     
 
 
+#FIXME: Remove this stuff.
 class MainPage(webapp.RequestHandler):
     def get(self):
 		  
