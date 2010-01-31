@@ -12,7 +12,7 @@
       <ul>
         <li><b>Name:</b> Dr. {{ doctor.name }}</li>
         <li><b>Specialization:</b> {{ doctor.specialization }}</li>
-        <li><b>Sits from</b> {{ doctor.sits_from }} </b>up to</b> {{ doctor.sits_upto }}</li>
+        <li><b>Sits from</b> {{ doctor.sits_from_string }} </b>up to</b> {{ doctor.sits_upto_string }}</li>
         <li><b>Fee:</b> {{ doctor.fee }}</li>
         <li><b>Address:</b> {{ doctor.address }}</li>
         <li><b>Phone:</b> {{ doctor.phone }}</li>
@@ -25,7 +25,52 @@
 
 <h2>Add new doctor:</h2>
 <form action="/newdoctor", method="post">
-{{ form.as_p }}
+<p><label for="id_name">Name:</label> <input type="text" name="name" id="id_name" /></p> 
+<p><label for="id_specialization">Specialization:</label> <select name="specialization" id="id_specialization"> 
+<option value="Neurology,">Neurology,</option> 
+<option value="Dental">Dental</option> 
+<option value="Psychology">Psychology</option> 
+<option value="General" selected="selected">General</option> 
+</select></p> 
+<p>
+  <label for="id_sits_from">From:</label> 
+  <select name="sits_from_hour" id="id_sits_from_hour">
+  {% for h in hours %}
+    <option value="{{ h }}">{{ h }}</option>
+  {% endfor %}
+  </select>
+  <select name="sits_from_min" id="id_sits_from_min">
+  {% for m in mins %}
+    <option value="{{ m }}">{{ m }}</option>
+  {% endfor %}
+  </select>
+  <select name="sits_from_ampm" id="id_sits_from_ampm">
+    <option value="AM">AM</option>
+    <option value="PM">PM</option>
+  </select>
+</p> 
+<p>
+<label for="id_sits_upto">Up to:</label> 
+<select name="sits_upto_hour" id="id_sits_upto_hour">
+ {% for h in hours %}
+  <option value="{{ h }}">{{ h }}</option>
+ {% endfor %}
+</select>
+<select name="sits_upto_min" id="id_sits_upto_min">
+  {% for m in mins %}
+    <option value="{{ m }}">{{ m }}</option>
+  {% endfor %}
+</select>
+<select name="sits_upto_ampm" id="id_sits_upto_ampm">
+    <option value="AM">AM</option>
+    <option value="PM">PM</option>
+</select>
+</select>
+</p> 
+<p><label for="id_address">Address:</label> <input type="text" name="address" id="id_address" /></p> 
+<p><label for="id_fee">Fee:</label> <input type="text" name="fee" id="id_fee" /></p> 
+<p><label for="id_phone">Phone:</label> <input type="text" name="phone" id="id_phone" /></p> 
+<p><label for="id_email">Email:</label> <input type="text" name="email" id="id_email" /></p> 
 <input type="submit">
 </form>
 
